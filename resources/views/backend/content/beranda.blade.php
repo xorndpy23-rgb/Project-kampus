@@ -224,15 +224,13 @@
                 tbody.appendChild(row);
             });
             
-            // Render juga transaksi yang sudah diproses di bagian terpisah (misalnya di bawah tabel)
-            // Namun untuk kesederhanaan, kita fokus pada antrian PENDING saja.
+            
         }
 
         function updateStatus(id, newStatus) {
             const index = transactions.findIndex(t => t.id === id);
             if (index !== -1) {
                 transactions[index].status = newStatus;
-                // Di aplikasi nyata, Anda akan melakukan AJAX POST ke backend di sini
                 renderTransactions();
                 
                 
