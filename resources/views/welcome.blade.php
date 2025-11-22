@@ -291,7 +291,7 @@
             </div>
         </section>
 
-    <!-- STATISTIK SECTION - DIPERBAIKI -->
+    <!-- STATISTIK SECTION  -->
     <section id="statistik" class="py-20 bg-gradient-to-br from-green-600 to-green-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Section Header -->
@@ -331,7 +331,7 @@
                 </div>
             </div>
 
-            <!-- Impact Description - DIPERBAIKI SUPAYA TERLIHAT -->
+            <!-- Impact Description  -->
             <div class="mt-16 text-center fade-in">
                 <div class="inline-flex items-center gap-4 bg-white/20 backdrop-blur-sm rounded-2xl px-8 py-6 border-2 border-white/30">
                     <span class="text-3xl"></span>
