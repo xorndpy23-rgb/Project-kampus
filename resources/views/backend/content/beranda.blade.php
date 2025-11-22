@@ -235,7 +235,7 @@
                 // Di aplikasi nyata, Anda akan melakukan AJAX POST ke backend di sini
                 renderTransactions();
                 
-                // Tampilkan pesan sukses simulasi (optional)
+                
                 console.log(`Transaksi ${id} diperbarui ke status: ${newStatus}`);
             }
         }
