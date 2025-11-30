@@ -86,156 +86,18 @@
                     </div>
                 </div>
 
-                <!-- 3. Metode Pembayaran -->
-                <div class="section">
-                    <h3>💳 Metode Pembayaran</h3>
-                    <p>Pilih metode pembayaran yang diinginkan:</p>
-                    <div class="payment-methods">
-                        <div class="method" data-method="bank_transfer"><div>🏦</div><small>Transfer Bank</small></div>
-                        <div class="method" data-method="ewallet"><div>📱</div><small>E-Wallet</small></div>
-                        <div class="method" data-method="qris"><div></div><small>QRIS</small></div>
-                        <div class="method" data-method="cstore"><div></div><small>Alfamart/Indomaret</small></div>
-                    </div>
 
-                    <input type="hidden" id="payment_method" name="payment_method" value="{{ old('payment_method') }}">
-                    
-                    <div id="payment-details" class="payment-details">
-
-    <!-- BANK TRANSFER -->
-    <div id="bank_transfer-details" class="method-details">
-        <h4>Pilih Bank Tujuan</h4>
-
-        <div class="bank-options">
-            <div class="bank-option" data-bank="bca">
-                <div class="bank-logo">
-                    <img src="{{ asset('assets/img/bca.png') }}" alt="Bank BCA">
-                </div>
-                <div class="bank-info">
-                    <strong>Bank BCA</strong>
-                    <p>1234567890</p>
-                    <p>Masjid Al-Muttaqin</p>
-                </div>
+                <!-- 3. Pembayaran -->
+            <div class="section">
+                <h3>💳 Pembayaran</h3>
+                <p>Setelah klik tombol <strong>Lanjutkan Pembayaran</strong>, sistem akan membuka halaman pembayaran otomatis melalui Midtrans.</p>
             </div>
-
-            <div class="bank-option" data-bank="bri">
-                <div class="bank-logo">
-                    <img src="{{ asset('assets/img/bri.png') }}" alt="Bank BRI">
-                </div>
-                <div class="bank-info">
-                    <strong>Bank BRI</strong>
-                    <p>0987654321</p>
-                    <p>Masjid Al-Muttaqin</p>
-                </div>
-            </div>
-
-            <div class="bank-option" data-bank="mandiri">
-                <div class="bank-logo">
-                    <img src="{{ asset('assets/img/mandiri.png') }}" alt="Bank Mandiri">
-                </div>
-                <div class="bank-info">
-                    <strong>Bank Mandiri</strong>
-                    <p>1122334455</p>
-                    <p>Masjid Al-Muttaqin</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-           <!-- E-WALLET -->
-<div id="ewallet-details" class="method-details" style="display:none;">
-    <h4>Pilih E-Wallet</h4>
-    <div class="bank-options">
-
-        <div class="bank-option ewallet-option" data-ewallet="gopay">
-            <div class="bank-logo"><img src="{{ asset('assets/img/gopay.jpg') }}" alt="Gopay"></div>
-            <div class="bank-info">
-                <strong>Gopay</strong>
-                <p>081234567890</p>
-                <p>a.n Masjid Al-Muttaqin</p>
-            </div>
-        </div>
-
-        <div class="bank-option ewallet-option" data-ewallet="ovo">
-            <div class="bank-logo"><img src="{{ asset('assets/img/ovo.png') }}" alt="OVO"></div>
-            <div class="bank-info">
-                <strong>OVO</strong>
-                <p>081234567890</p>
-                <p>a.n Masjid Al-Muttaqin</p>
-            </div>
-        </div>
-
-        <div class="bank-option ewallet-option" data-ewallet="dana">
-            <div class="bank-logo"><img src="{{ asset('assets/img/dana.png') }}" alt="Dana"></div>
-            <div class="bank-info">
-                <strong>DANA</strong>
-                <p>081234567890</p>
-                <p>a.n Masjid Al-Muttaqin</p>
-            </div>
-        </div>
-
-        <div class="bank-option ewallet-option" data-ewallet="shopeepay">
-            <div class="bank-logo"><img src="{{ asset('assets/img/shopeepay.png') }}" alt="ShopeePay"></div>
-            <div class="bank-info">
-                <strong>ShopeePay</strong>
-                <p>081234567890</p>
-                <p>a.n Masjid Al-Muttaqin</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    <!-- QRIS -->
-    <div id="qris-details" class="method-details">
-        <h4>QRIS</h4>
-        <p>Scan kode QR berikut:</p>
-
-        <div class="qris-container">
-            <div class="qris-code">
-                <img src="{{ asset('assets/img/qr.jpeg') }}" alt="QRIS" class="qr-image" onerror="handleQRError(this)">
-            </div>
-
-            <div id="qr-fallback" style="display:none; text-align:center; margin-top:10px;">
-                <p>QR Code tidak tersedia, silakan transfer manual.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- CSTORE -->
-    <div id="cstore-details" class="method-details">
-        <h4>Alfamart / Indomaret</h4>
-        <p>Kode Pembayaran:</p>
-        <div class="payment-code"><strong>ALFA123456</strong></div>
-    </div>
-
-</div>
-
-<!-- Hidden untuk dikirim ke controller -->
-<input type="hidden" id="selectedBankInput" name="selected_bank">
-<input type="hidden" id="selectedEwalletInput" name="selected_ewallet">
-
-                        <div id="cstore-details" class="method-details">
-                            <h4>Alfamart/Indomaret</h4>
-                            <p>Gunakan kode pembayaran berikut:</p>
-                            <div class="payment-code"><strong id="payment-code">ALFA123456</strong></div>
-                        </div>
-                    </div>
-                </div>
 
                 <button type="submit" class="btn-submit" id="submit-btn">
                     <span id="btn-text">Lanjutkan Pembayaran</span>
                     <span id="btn-loading"><span class="loading"></span></span>
                 </button>
             </form>
-
-            @if($errors->any())
-                <div class="error-container">
-                    <h4>❌ Terjadi kesalahan:</h4>
-                    <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
-                </div>
-            @endif
-        </div>
-    </div>
 
     <!-- MODAL KALKULATOR -->
     <div id="kalkulatorModal" class="kalkulator-modal">
@@ -301,5 +163,9 @@
             document.getElementById('qr-fallback').style.display = 'block';
         }
     </script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}">
+</script>
+
 </body>
 </html>

@@ -11,18 +11,35 @@
     <div class="min-h-screen flex items-center justify-center py-10">
         <div class="w-full max-w-2xl bg-white rounded-xl shadow-xl p-10 text-center">
             <h1 class="text-3xl font-extrabold text-yellow-500 mb-3">
-                Pembayaran Pending
+                Menghubungkan ke Midtrans...
             </h1>
             <p class="text-gray-600 mb-6">
-                Transaksi Anda belum selesai. Silakan selesaikan pembayaran sesuai instruksi Midtrans.
+                Mohon menunggu, halaman pembayaran sedang dibuka.
             </p>
-
-            <a href="/zakat" 
-               class="px-6 py-3 text-lg font-bold rounded-full text-white bg-yellow-500 hover:bg-yellow-600 shadow-lg">
-               Kembali ke Form Zakat
-            </a>
         </div>
     </div>
+
+    <!-- SNAP JS -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="{{ config('services.midtrans.client_key') }}">
+    </script>
+
+    <script>
+        snap.pay("{{ $zakat->snap_token }}", {
+            onSuccess: function(result){
+                window.location.href = "/zakat/success/{{ $zakat->kode_transaksi }}";
+            },
+            onPending: function(result){
+                // tetap di halaman pending
+            },
+            onError: function(result){
+                alert("Terjadi kesalahan pembayaran.");
+            },
+            onClose: function(){
+                alert("Anda menutup pembayaran sebelum selesai.");
+            }
+        });
+    </script>
 
 </body>
 </html>

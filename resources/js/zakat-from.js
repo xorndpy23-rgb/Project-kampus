@@ -1,16 +1,16 @@
-// Format Rupiah yang benar dengan format "Rp X.XXX.XXX,–"
+
 function formatRupiah(amount) {
     if (!amount && amount !== 0) return 'Rp 0,–';
     return 'Rp ' + Math.round(amount).toLocaleString('id-ID') + ',–';
 }
 
-// Format Rupiah tanpa ",-" untuk detail
+
 function formatRupiahDetail(amount) {
     if (!amount && amount !== 0) return 'Rp 0,–';
     return 'Rp ' + Math.round(amount).toLocaleString('id-ID') + ',–';
 }
 
-// Kalkulasi otomatis 2.5% dari jumlah harta
+
 document.getElementById('jumlah_harta').addEventListener('input', function() {
     const jumlahHarta = parseFloat(this.value) || 0;
     if (jumlahHarta > 0) {
@@ -120,7 +120,7 @@ document.getElementById('hitungKalkulator').addEventListener('click', function()
         document.getElementById('hasilTitle').textContent = 'Zakat Maal';
     }
     
-    const nishab = 85000000; // Rp 85 juta
+    const nishab = 85000000; 
     
     // Hitung zakat
     let zakatAmount = 0;

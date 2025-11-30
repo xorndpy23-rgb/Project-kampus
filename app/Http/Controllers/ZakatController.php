@@ -26,7 +26,8 @@ class ZakatController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        
+                $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email',
             'phone' => 'required|string|max:15',
@@ -35,11 +36,11 @@ class ZakatController extends Controller
             'sumber_harta' => 'nullable|string',
             'jumlah_harta' => 'nullable|numeric',
             'catatan' => 'nullable|string',
-            'payment_method' => 'required|string',
         ]);
 
+
         try {
-            // Simpan data zakat
+            
             $zakat = Zakat::create([
                 'kode_transaksi' => 'ZAKAT-' . time() . '-' . rand(1000, 9999),
                 'nama' => $request->nama,
@@ -54,7 +55,7 @@ class ZakatController extends Controller
                 'status' => 'pending',
             ]);
 
-            // Redirect ke halaman pembayaran
+            
             return redirect()->route('zakat.show', $zakat->kode_transaksi)
                             ->with('success', 'Data zakat berhasil disimpan!');
 
@@ -65,52 +66,58 @@ class ZakatController extends Controller
         }
     }
 
-    public function show($kode_transaksi)
-    {
-        $zakat = Zakat::where('kode_transaksi', $kode_transaksi)->firstOrFail();
-        
-        // Jika sudah ada snap_token, gunakan yang ada
-        if ($zakat->snap_token) {
-            return view('zakat.show', compact('zakat'));
-        }
+   public function show($kode_transaksi)
+{
+    $zakat = Zakat::where('kode_transaksi', $kode_transaksi)->firstOrFail();
 
-        // Buat transaksi Midtrans
-        $params = [
-            'transaction_details' => [
-                'order_id' => $zakat->kode_transaksi,
-                'gross_amount' => $zakat->nominal,
-            ],
-            'customer_details' => [
-                'first_name' => $zakat->nama,
-                'email' => $zakat->email,
-                'phone' => $zakat->phone,
-            ],
-            'item_details' => [
-                [
-                    'id' => $zakat->jenis_zakat,
-                    'price' => $zakat->nominal,
-                    'quantity' => 1,
-                    'name' => 'Zakat ' . ucfirst($zakat->jenis_zakat),
-                ]
-            ],
-            'enabled_payments' => $this->getEnabledPayments($zakat->payment_method),
-            'callbacks' => [
-                'finish' => url('/zakat/success/' . $zakat->kode_transaksi)
-            ]
-        ];
-
-        try {
-            $snapToken = Snap::getSnapToken($params);
-            
-            // Update snap_token ke database
-            $zakat->update(['snap_token' => $snapToken]);
-            
-            return view('zakat.show', compact('zakat'));
-
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error pembayaran: ' . $e->getMessage());
-        }
+    if ($zakat->snap_token) {
+        return view('zakat.show', compact('zakat'));
     }
+
+    try {
+       $params = [
+    'transaction_details' => [
+        'order_id' => $zakat->kode_transaksi,
+        'gross_amount' => $zakat->nominal, 
+    ],
+    'customer_details' => [
+        'first_name' => $zakat->nama,
+        'email' => $zakat->email,
+        'phone' => $zakat->phone,
+    ],
+    'item_details' => [
+        [
+            'id' => $zakat->jenis_zakat,
+            'price' => $zakat->nominal,
+            'quantity' => 1,
+            'name' => 'Zakat ' . ucfirst($zakat->jenis_zakat),
+        ]
+    ],
+    'enabled_payments' => [
+        'gopay',
+        'shopeepay',
+        'qris',
+        'bca_va',
+        'bni_va',
+        'bri_va',
+        'mandiri_va',
+        'permata_va',
+        'alfamart',
+        'indomaret'
+    ]
+];
+
+        $snapToken = Snap::getSnapToken($params);
+        $zakat->update(['snap_token' => $snapToken]);
+
+        return view('zakat.show', compact('zakat'));
+
+    } catch (\Exception $e) {
+        dd('Error generate Snap token: ' . $e->getMessage());
+    }
+}
+
+
 
     private function getEnabledPayments($paymentMethod)
     {
