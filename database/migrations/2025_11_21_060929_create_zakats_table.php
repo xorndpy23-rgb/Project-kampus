@@ -6,27 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
-    {
-        Schema::create('zakats', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode_transaksi')->unique();
-            $table->string('nama');
-            $table->string('email');
-            $table->string('phone');
-            $table->enum('jenis_zakat', ['mal', 'fitrah', 'infaq']);
-            $table->string('sumber_harta')->nullable();
-            $table->decimal('jumlah_harta', 15, 2)->nullable();
-            $table->decimal('nominal', 15, 2);
-            $table->text('catatan')->nullable();
-            $table->string('snap_token')->nullable();
-            $table->enum('status', ['pending', 'success', 'failed', 'expired'])->default('pending');
-            $table->timestamps();
-        });
+   public function index()
+{
+    
+    $totalPemasukan = Zakat::sum('nominal');
+
+    $totalPengeluaran = 0;
+
+    $transaksiBerhasil = Zakat::where('status', 'success')->count();
+    $transaksiPending = Zakat::where('status', 'pending')->count();
+
+    $transaksiTerbaru = Zakat::orderBy('created_at', 'desc')->take(5)->get();
+
+    $bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+    $pemasukanBulanan = [];
+    foreach ($bulan as $key => $b) {
+        $pemasukanBulanan[] = Zakat::whereMonth('created_at', $key+1)->sum('nominal');
     }
 
-    public function down()
-    {
-        Schema::dropIfExists('zakats');
-    }
+    return view('backend.content.beranda', compact(
+        'totalPemasukan',
+        'totalPengeluaran',
+        'transaksiBerhasil',
+        'transaksiPending',
+        'transaksiTerbaru',
+        'bulan',
+        'pemasukanBulanan'
+    ));
+}
+
 };

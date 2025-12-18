@@ -47,6 +47,8 @@
             scroll-behavior: smooth;
         }
     </style>
+    
+    
 </head>
 
 <body class="antialiased bg-gray-50 text-gray-800">
@@ -54,31 +56,70 @@
     <!-- WRAPPER -->
     <div class="relative min-h-screen flex flex-col">
 
+        
         <!-- NAVBAR -->
-        <header class="sticky top-0 z-50 w-full py-4 px-6 sm:px-10 bg-white shadow-lg flex justify-between items-center">
-            <div class="text-2xl font-extrabold text-primary">
-                <span class="text-gray-900">Al-Muttaqin</span>
-            </div>
+<header class="sticky top-0 z-50 w-full py-4 px-6 sm:px-10 bg-white shadow-lg flex justify-between items-center">
+    <div class="text-2xl font-extrabold text-primary">
+        <span class="text-gray-900">Al-Muttaqin</span>
+    </div>
 
-            <nav class="hidden md:flex space-x-6 text-sm font-medium">
-                <a href="#layanan" class="text-gray-600 hover:text-primary transition-colors">Layanan</a>
-                <a href="#keunggulan" class="text-gray-600 hover:text-primary transition-colors">Keunggulan</a>
-                <a href="#statistik" class="text-gray-600 hover:text-primary transition-colors">Statistik</a>
-                <a href="#testimoni" class="text-gray-600 hover:text-primary transition-colors">Testimoni</a>
-            </nav>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium">
+        <a href="#layanan" class="text-gray-600 hover:text-primary transition-colors">Layanan</a>
+        <a href="#keunggulan" class="text-gray-600 hover:text-primary transition-colors">Keunggulan</a>
+        <a href="#statistik" class="text-gray-600 hover:text-primary transition-colors">Statistik</a>
+        <a href="#testimoni" class="text-gray-600 hover:text-primary transition-colors">Testimoni</a>
+        <a href="#kegiatan-masjid" class="text-gray-600 hover:text-primary transition-colors">Kegiatan Masjid</a>
 
-            <div class="flex items-center space-x-4">
-                @auth
-                    <a href="{{ route('beranda.index') }}" class="text-sm font-semibold text-primary hover:text-primary-dark transition-colors">Dashboard</a>
-                @else
-                    <a href="{{ route('auth.index') }}" class="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">Login Admin</a>
-                    <a href="{{ route('zakat.create') }}"
-                        class="px-4 py-2 text-sm font-bold rounded-full bg-primary text-white hover:bg-primary-dark transition-all transform hover:scale-105 shadow-md">
-                        Bayar Zakat
-                    </a>
-                @endauth
+    </nav>
+
+    <div class="flex items-center space-x-4">
+        @auth
+             <a href="{{ route('auth.login') }}" class="text-sm font-semibold text-gray-600 hover:text-primary transition-colors">
+                Login
+            </a>
+        @endauth
+
+        <a href="{{ route('zakat.create') }}" class="px-4 py-2 text-sm font-bold rounded-full bg-primary text-white hover:bg-primary-dark transition-all transform hover:scale-105 shadow-md">
+            Bayar Zakat
+        </a>
+    </div>
+</header>
+
+        <!-- SECTION: JADWAL SHOLAT -->
+        <section class="py-16 bg-gray-100" id="jadwal-sholat">
+            <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">Jadwal Sholat</h2>
+            <p class="text-gray-600 mb-10">Masjid Al-Muttaqin</p>
+
+
+        <div id="jadwalContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="bg-white shadow-md p-5 rounded-xl">
+            <p class="font-semibold text-gray-600">Subuh</p>
+            <p id="subuh" class="text-2xl font-bold text-primary">--:--</p>
+        </div>
+            <div class="bg-white shadow-md p-5 rounded-xl">
+            <p class="font-semibold text-gray-600">Dzuhur</p>
+            <p id="dzuhur" class="text-2xl font-bold text-primary">--:--</p>
             </div>
-        </header>
+            <div class="bg-white shadow-md p-5 rounded-xl">
+        <p class="font-semibold text-gray-600">Ashar</p>
+        <p id="ashar" class="text-2xl font-bold text-primary">--:--</p>
+        </div>
+        <div class="bg-white shadow-md p-5 rounded-xl">
+        <p class="font-semibold text-gray-600">Maghrib</p>
+            <p id="maghrib" class="text-2xl font-bold text-primary">--:--</p>
+            </div>
+        <div class="bg-white shadow-md p-5 rounded-xl">
+          <p class="font-semibold text-gray-600">Isya</p>
+        <p id="isya" class="text-2xl font-bold text-primary">--:--</p>
+        </div>
+            <div class="bg-white shadow-md p-5 rounded-xl">
+            <p class="font-semibold text-gray-600">Imsak</p>
+            <p id="imsak" class="text-2xl font-bold text-primary">--:--</p>
+            </div>
+            </div>
+            </div>
+        </section>
 
         <!-- HERO SECTION -->
         <section class="relative py-20 md:py-32 bg-gradient-to-br from-green-50 to-emerald-100 overflow-hidden">
@@ -145,6 +186,92 @@
             </div>
         </section>
 
+      <!-- KEGIATAN MASJID -->
+<section id="kegiatan-masjid" class="py-24 bg-gradient-to-br from-green-50 to-emerald-100 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute w-80 h-80 bg-primary rounded-full blur-3xl top-10 left-10"></div>
+        <div class="absolute w-96 h-96 bg-yellow-300 rounded-full blur-3xl bottom-10 right-20"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6">
+
+        <!-- Title -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3 animate__animated animate__fadeInUp">
+                Kegiatan Masjid
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto animate__animated animate__fadeInUp animate__delay-1s">
+                Program ibadah, pendidikan, dan sosial yang rutin dilaksanakan di Masjid Al-Muttaqin
+            </p>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+            <!-- Card 1: Kajian Rutin -->
+            <a href="{{ route('kegiatan.show', ['slug' => 'kajian']) }}" class="group relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-transform duration-500 hover:-translate-y-2 animate__animated animate__fadeInUp">
+                <img src="https://umsida.ac.id/wp-content/uploads/2023/03/WhatsApp-Image-2023-03-08-at-14.01.16.jpeg" 
+                     class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105">
+                <!-- Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="p-6 relative z-10">
+                    <div class="flex items-center gap-2 mb-2 text-white">
+                        <svg class="w-6 h-6" ...></svg>
+                        <h3 class="text-2xl font-bold text-black">Kajian Rutin</h3>
+                    </div>
+
+                    <p class="text-black text-sm leading-relaxed">
+                        Kajian Ba’da Maghrib setiap Selasa & Jumat bersama ustadz dan asatidz terpercaya.
+                    </p>
+                    <span class="inline-block mt-4 px-4 py-2 bg-primary/80 text-white rounded-full text-sm font-semibold hover:bg-primary-dark transition-colors">
+                     
+                    </span>
+                </div>
+            </a>
+
+            <!-- Card 2: TPA & Tahfidz -->
+            <a href="{{ route('kegiatan.show', ['slug' => 'tpa']) }}" class="group relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-transform duration-500 hover:-translate-y-2 animate__animated animate__fadeInUp animate__delay-1s">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.M1_eSyfPRPiBn4Ku4eTILgHaFj?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3" 
+                     class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="p-6 relative z-10">
+                    <div class="flex items-center gap-2 mb-2 text-white">
+                        <svg class="w-6 h-6" ...></svg>
+                        <h3 class="text-2xl font-bold text-black">TPA & Hafidz</h3>
+                    </div>
+                    <p class="text-black text-sm leading-relaxed">
+                        Pembelajaran Al-Qur'an, doa harian, dan hafalan untuk anak-anak setiap sore.
+                    </p>
+                    <span class="inline-block mt-4 px-4 py-2 bg-primary/80 text-white rounded-full text-sm font-semibold hover:bg-primary-dark transition-colors">
+                        
+                    </span>
+                </div>
+            </a>
+
+            <!-- Card 3: Bakti Sosial -->
+            <a href="{{ route('kegiatan.show', ['slug' => 'baksos']) }}" class="group relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-transform duration-500 hover:-translate-y-2 animate__animated animate__fadeInUp animate__delay-2s">
+                <img src="https://fkh.ugm.ac.id/wp-content/uploads/sites/14/2020/08/1598848564189.jpg" 
+                     class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="p-6 relative z-10">
+                    <div class="flex items-center gap-2 mb-2 text-white">
+                        <svg class="w-6 h-6" ...></svg>
+                        <h3 class="text-2xl font-bold text-black">Bakti Sosial</h3>
+                    </div>
+                    <p class="text-black text-sm leading-relaxed">
+                        Kegiatan berbagi sembako, santunan dhuafa, dan bantuan kemanusiaan untuk masyarakat.
+                    </p>
+                    <span class="inline-block mt-4 px-4 py-2 bg-primary/80 text-white rounded-full text-sm font-semibold hover:bg-primary-dark transition-colors">
+                      
+                    </span>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+
         <!-- LAYANAN SECTION -->
         <section id="layanan" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -162,21 +289,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Zakat Fitrah -->
                     <div class="group bg-gradient-to-br from-white to-green-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 fade-in border border-green-100 hover:border-primary/20">
-                        <div class="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300">🌾</div>
+                        <div class="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300"></div>
                         <h3 class="text-2xl font-bold text-center mb-4 text-gray-900">Zakat Fitrah</h3>
                         <p class="text-gray-600 text-center leading-relaxed">
                             Zakat wajib yang ditunaikan setiap muslim di bulan Ramadhan sebagai pembersih jiwa.
                         </p>
                         <div class="mt-6 text-center">
                             <span class="inline-block px-4 py-2 bg-green-100 text-primary rounded-full text-sm font-semibold">
-                                Wajib bagi setiap muslim
+                               
                             </span>
                         </div>
                     </div>
 
                     <!-- Zakat Mal -->
                     <div class="group bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 fade-in border border-blue-100 hover:border-primary/20">
-                        <div class="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300">💰</div>
+                        <div class="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300"></div>
                         <h3 class="text-2xl font-bold text-center mb-4 text-gray-900">Zakat Mal</h3>
                         <p class="text-gray-600 text-center leading-relaxed">
                             Zakat harta seperti penghasilan, emas, tabungan, dan properti yang telah mencapai nisab.
@@ -190,7 +317,7 @@
 
                     <!-- Infaq & Sedekah -->
                     <div class="group bg-gradient-to-br from-white to-purple-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 fade-in border border-purple-100 hover:border-primary/20">
-                        <div class="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300">💖</div>
+                        <div class="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300"></div>
                         <h3 class="text-2xl font-bold text-center mb-4 text-gray-900">Infaq & Sedekah</h3>
                         <p class="text-gray-600 text-center leading-relaxed">
                             Donasi sukarela untuk mendukung program sosial, pendidikan, dan kemanusiaan masjid.
@@ -499,6 +626,9 @@
                             <a href="#keunggulan" class="block text-gray-400 hover:text-white transition-colors">Keunggulan</a>
                             <a href="#statistik" class="block text-gray-400 hover:text-white transition-colors">Statistik</a>
                             <a href="#testimoni" class="block text-gray-400 hover:text-white transition-colors">Testimoni</a>
+                            <a href="#kegiatan-masjid" class="text-gray-600 hover:text-primary transition-colors">Kegiatan Masjid</a>
+
+
                         </div>
                     </div>
 
@@ -622,5 +752,33 @@
         });
     </script>
 
+ <!-- SCRIPT AMBIL API JADWAL SHOLAT -->
+        <script>
+        async function loadJadwalSholat() {
+        try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const day = today.getDate();
+
+        const response = await fetch(`https://api.myquran.com/v2/sholat/jadwal/1301/${year}/${month}/${day}`);
+        const data = await response.json();
+
+
+        const jadwal = data.data.jadwal;
+        document.getElementById('subuh').textContent = jadwal.subuh;
+        document.getElementById('dzuhur').textContent = jadwal.dzuhur;
+        document.getElementById('ashar').textContent = jadwal.ashar;
+        document.getElementById('maghrib').textContent = jadwal.maghrib;
+        document.getElementById('isya').textContent = jadwal.isya;
+        document.getElementById('imsak').textContent = jadwal.imsak;
+        } catch (error) {
+        console.error('Gagal memuat jadwal sholat:', error);
+        }
+        }
+
+
+loadJadwalSholat();
+</script>
 </body>
 </html>

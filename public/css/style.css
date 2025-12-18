@@ -326,9 +326,9 @@ input:focus, select:focus, textarea:focus {
 
 .kalkulator-header {
     display: flex;
-    justify-content: between;
+    justify-content: space-between; 
     align-items: center;
-    padding: 20px;
+    padding: 20px 25px; 
     border-bottom: 1px solid var(--border);
 }
 
@@ -1004,7 +1004,7 @@ button, a {
 }
 
 /* Section Styles */
-.layanan-section, .keunggulan-section, .statistik-section, .testimoni-section {
+.layanan-section, .keunggulan-section, .statistik-section, .testimoni-section ,.kegiatan-Masjid{
     padding: 5rem 0;
 }
 
@@ -1421,4 +1421,136 @@ button, a {
     .stat-number {
         font-size: 2.5rem;
     }
+    /* Animasi Premium untuk Kegiatan */
+.kegiatan-card {
+    transition: all .4s ease;
+    transform: translateY(0);
+}
+
+.kegiatan-card:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.15);
+}
+
+
+/* ============================
+   PATCH BAZNAS STYLE
+   ============================ */
+.hasil-section {
+    background: #ffffff;
+    border: 2px solid #e5e5e5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.hasil-amount {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #2D936C;
+}
+
+.zakat-type-btn.active {
+    background: #2D936C !important;
+    border-color: #2D936C !important;
+    color: #ffffff !important;
+}
+}
+/* Background modal */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+
+/* Tampilkan modal */
+.modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Konten modal */
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 25px;
+  width: 90%;
+  max-width: 500px; /* lebih lebar */
+  text-align: left;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  font-family: Arial, sans-serif;
+}
+
+/* Scale up saat modal tampil */
+.modal.show .modal-content {
+  transform: scale(1);
+}
+
+/* Judul modal */
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+  color: #0d4f8b; /* biru BAZNAS */
+}
+
+/* Body modal */
+.modal-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+.modal-body td {
+  padding: 6px 8px;
+  font-size: 1rem;
+  vertical-align: top;
+}
+
+.modal-body td:first-child {
+  font-weight: 600;
+  width: 35%;
+}
+
+/* Footer tombol */
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-confirm {
+  background-color: #0d4f8b; /* biru BAZNAS */
+  color: #fff;
+}
+
+.btn-confirm:hover {
+  background-color: #09386a;
+}
+
+.btn-cancel {
+  background-color: #e5e7eb; /* abu-abu */
+  color: #111827;
+}
+
+.btn-cancel:hover {
+  background-color: #d1d5db;
 }

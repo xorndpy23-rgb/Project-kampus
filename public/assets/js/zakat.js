@@ -260,4 +260,5 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('submit-btn').disabled = true;
         });
     }
+    
 });

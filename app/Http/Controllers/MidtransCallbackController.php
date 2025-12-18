@@ -13,67 +13,88 @@ class MidtransCallbackController extends Controller
     public function receive(Request $request)
     {
         $payload = $request->all();
-        Log::info('Midtrans Callback Received:', $payload);
+        Log::info('Midtrans Callback Received', $payload);
 
-        // 1. Validasi Signature Key
-        
-        $generatedSignature = hash('sha512',
+        /**
+         * =====================================================
+         * 1. VALIDASI SIGNATURE KEY (WAJIB)
+         * =====================================================
+         */
+        $serverKey = config('services.midtrans.server_key');
+
+        $generatedSignature = hash(
+            'sha512',
             $payload['order_id'] .
             $payload['status_code'] .
             $payload['gross_amount'] .
-            env('MIDTRANS_SERVER_KEY')
+            $serverKey
         );
 
         if (($payload['signature_key'] ?? '') !== $generatedSignature) {
-            Log::error('Invalid signature', [
-                'payload_signature' => $payload['signature_key'] ?? '',
-                'generated_signature' => $generatedSignature,
+            Log::error('Invalid Midtrans signature', [
+                'expected' => $generatedSignature,
+                'received' => $payload['signature_key'] ?? null,
             ]);
 
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Invalid signature'
             ], 403);
         }
 
-        // 2. Cari data zakat
-        
+        /**
+         * =====================================================
+         * 2. CARI DATA ZAKAT
+         * =====================================================
+         */
         $zakat = Zakat::where('kode_transaksi', $payload['order_id'])->first();
 
         if (!$zakat) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Order not found'
             ], 404);
         }
 
-    
-        // 3. Update status berdasarkan callback
-        
-        $transaction = $payload['transaction_status'];
-        $fraud       = $payload['fraud_status'] ?? null;
+        /**
+         * =====================================================
+         * 3. UPDATE STATUS TRANSAKSI (KONSISTEN)
+         * =====================================================
+         */
+        $transactionStatus = $payload['transaction_status'];
+        $fraudStatus       = $payload['fraud_status'] ?? null;
 
-        $statusMap = [
-            'capture'    => ($fraud === 'challenge' ? 'challenge' : 'success'),
-            'settlement' => 'success',
-            'pending'    => 'pending',
-            'deny'       => 'deny',
-            'expire'     => 'expire',
-            'cancel'     => 'cancel',
-        ];
+        if (in_array($transactionStatus, ['capture', 'settlement'])) {
+            if ($fraudStatus === 'challenge') {
+                $zakat->status = 'pending';
+            } else {
+                $zakat->status = 'paid';
+            }
+        } elseif ($transactionStatus === 'pending') {
+            $zakat->status = 'pending';
+        } else {
+            $zakat->status = 'failed';
+        }
 
-        $zakat->update(['status' => $statusMap[$transaction] ?? $zakat->status]);
+        $zakat->payment_method = $payload['payment_type'] ?? null;
+        $zakat->save();
 
-        // 4. Kirim email jika sukses
-       
-        if ($zakat->status === 'success') {
+        /**
+         * =====================================================
+         * 4. KIRIM EMAIL (HANYA JIKA SUKSES)
+         * =====================================================
+         */
+        if ($zakat->status === 'paid') {
             try {
                 Mail::to($zakat->email)->send(new ZakatPaid($zakat));
             } catch (\Exception $e) {
-                Log::error('Gagal kirim email: ' . $e->getMessage());
+                Log::error('Gagal kirim email zakat: ' . $e->getMessage());
             }
         }
 
-        return response()->json(['message' => 'Callback received successfully'], 200);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Callback processed'
+        ], 200);
     }
 }

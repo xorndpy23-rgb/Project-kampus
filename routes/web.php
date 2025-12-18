@@ -5,72 +5,79 @@ use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ZakatController;
 use App\Http\Controllers\MidtransCallbackController;
+use App\Http\Controllers\KegiatanController;
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTES
+| PUBLIC
 |--------------------------------------------------------------------------
 */
-
-// Halaman landing dan home
 Route::get('/', [ZakatController::class, 'welcome'])->name('welcome');
 Route::get('/home', [ZakatController::class, 'welcome'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
-| ZAKAT & PAYMENT FLOW
+| ZAKAT & MIDTRANS
 |--------------------------------------------------------------------------
 */
-Route::prefix('zakat')->group(function () {
+Route::prefix('zakat')->name('zakat.')->group(function () {
 
-    // Form input zakat
-    Route::get('/', [ZakatController::class, 'create'])->name('zakat.create');
-    Route::post('/store', [ZakatController::class, 'store'])->name('zakat.store');
+    // halaman form zakat
+    Route::get('/', [ZakatController::class, 'create'])->name('create');
 
-    // Halaman pembayaran (Snap Midtrans)
-    Route::get('/{kode_transaksi}', [ZakatController::class, 'show'])->name('zakat.show');
+    // ajax midtrans
+    Route::post('/midtrans', [ZakatController::class, 'midtrans'])->name('midtrans');
 
-    // Halaman status setelah pembayaran
-    Route::get('/success/{kode_transaksi}', [ZakatController::class, 'success'])->name('zakat.success');
-    Route::get('/pending/{kode_transaksi}', [ZakatController::class, 'pending'])->name('zakat.pending');
-    Route::get('/status/{kode_transaksi}', [ZakatController::class, 'status'])->name('zakat.status');
+    // hasil pembayaran
+    Route::get('/success/{kode}', [ZakatController::class, 'success'])->name('success');
+    Route::get('/pending/{kode}', [ZakatController::class, 'pending'])->name('pending');
 });
 
-// Callback Midtrans (WAJIB)
+/*
+|--------------------------------------------------------------------------
+| MIDTRANS CALLBACK
+|--------------------------------------------------------------------------
+*/
 Route::post('/midtrans/callback', [MidtransCallbackController::class, 'receive'])
     ->name('midtrans.callback');
 
 /*
 |--------------------------------------------------------------------------
-| FINISH / ERROR HANDLING PAGE FOR MIDTRANS REDIRECT (OPTIONAL)
+| AUTH
 |--------------------------------------------------------------------------
 */
-Route::view('/midtrans/finish', 'midtrans.finish')->name('midtrans.finish');
-Route::view('/midtrans/unfinish', 'midtrans.unfinish')->name('midtrans.unfinish');
-Route::view('/midtrans/error', 'midtrans.error')->name('midtrans.error');
+Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/login', [AuthController::class, 'verify'])->name('auth.login.verify');
+
+Route::get('/register', [AuthController::class, 'register'])->name('auth.register');
+Route::post('/register', [AuthController::class, 'store'])->name('auth.register.post');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 /*
 |--------------------------------------------------------------------------
-| AUTH ROUTES
+| ADMIN
 |--------------------------------------------------------------------------
 */
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'index'])->name('auth.index');
-    Route::post('/login', [AuthController::class, 'verify'])->name('auth.verify');
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [BerandaController::class, 'index'])->name('beranda');
+    Route::get('/users', [BerandaController::class, 'users'])->name('users');
+    Route::get('/zakat', [BerandaController::class, 'zakat'])->name('zakat');
+    Route::get('/donasi', [BerandaController::class, 'donasi'])->name('donasi');
+    Route::get('/laporan', [BerandaController::class, 'laporan'])->name('laporan');
+    Route::get('/pengaturan', [BerandaController::class, 'pengaturan'])->name('pengaturan');
 });
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN AREA
+| KEGIATAN
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth:user')->prefix('admin')->group(function () {
-    
-    Route::get('/', [BerandaController::class, 'index'])->name('beranda.index');
-    Route::get('/profil', [BerandaController::class, 'profil'])->name('beranda.profil');
+Route::get('/kegiatan/{slug}', [KegiatanController::class, 'show'])->name('kegiatan.show');
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-});
-Route::get('/midtrans-test', function() {
-    return config('services.midtrans.server_key');
-});
+/*
+|--------------------------------------------------------------------------
+| TEST
+|--------------------------------------------------------------------------
+*/
+Route::get('/midtrans-test', fn () => config('services.midtrans.server_key'));

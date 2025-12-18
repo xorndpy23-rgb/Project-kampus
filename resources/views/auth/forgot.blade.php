@@ -2,13 +2,11 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Masjid Al-Muttaqin | Login</title>
-
-<link href="" rel="stylesheet">
+<title>Masjid Al-Muttaqin | Lupa Password</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box}
-
 body{
     margin:0;
     font-family:'Inter',sans-serif;
@@ -21,26 +19,23 @@ body{
     align-items:center;
 }
 
-/* === TOMBOL BERANDA === */
-.btn-beranda{
-    position:fixed;
+/* tombol beranda */
+.back-home{
+    position:absolute;
     top:20px;
     left:20px;
-    background:#0a7c4a;
-    color:#fff;
-    padding:10px 16px;
-    border-radius:8px;
-    font-size:14px;
-    font-weight:600;
-    text-decoration:none;
-    box-shadow:0 6px 18px rgba(0,0,0,.25);
-    transition:.2s;
 }
-.btn-beranda:hover{
-    background:#06653c;
+.back-home a{
+    background:#ffffffdd;
+    padding:8px 14px;
+    border-radius:20px;
+    text-decoration:none;
+    color:#0a7c4a;
+    font-weight:600;
+    font-size:14px;
 }
 
-/* === CARD LOGIN === */
+/* card */
 .card{
     width:420px;
     background:#fff;
@@ -64,12 +59,6 @@ input{
     margin-bottom:15px;
     border-radius:8px;
     border:1px solid #ccc;
-    font-size:14px;
-}
-input:focus{
-    outline:none;
-    border-color:#0a7c4a;
-    box-shadow:0 0 0 2px rgba(10,124,74,.2);
 }
 button{
     width:100%;
@@ -79,7 +68,6 @@ button{
     background:#0a7c4a;
     color:#fff;
     font-weight:600;
-    font-size:15px;
     cursor:pointer;
 }
 button:hover{background:#06653c}
@@ -94,9 +82,6 @@ button:hover{background:#06653c}
     font-weight:600;
     text-decoration:none;
 }
-.link a:hover{
-    text-decoration:underline;
-}
 
 .alert{
     background:#ffe0e0;
@@ -106,32 +91,38 @@ button:hover{background:#06653c}
     color:#b30000;
     font-size:14px;
 }
+.success{
+    background:#e0ffe8;
+    color:#0a7c4a;
+}
 </style>
 </head>
-
 <body>
 
-<!-- TOMBOL KE BERANDA -->
-<a href="{{ route('welcome') }}" class="btn-beranda">← Beranda</a>
+<div class="back-home">
+    <a href="{{ route('welcome') }}">← Beranda</a>
+</div>
 
 <div class="card">
     <img src="{{ asset('assets/img/logo.png') }}" class="logo">
-    <h2>Masuk Akun</h2>
+    <h2>Lupa Password</h2>
 
     @if(session('pesan'))
-        <div class="alert">{{ session('pesan') }}</div>
+        <div class="alert success">{{ session('pesan') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('auth.login.verify') }}">
+    @if($errors->any())
+        <div class="alert">{{ $errors->first() }}</div>
+    @endif
+
+    <form method="POST" action="{{ route('password.email') }}">
         @csrf
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
+        <input type="email" name="email" placeholder="Masukkan Email Terdaftar" required>
+        <button>Kirim Link Reset</button>
     </form>
 
     <div class="link">
-        <a href="{{ route('password.request') }}">Lupa Password?</a><br>
-        <a href="{{ route('auth.register') }}">Daftar Akun</a>
+        <a href="{{ route('auth.login') }}">Kembali ke Login</a>
     </div>
 </div>
 

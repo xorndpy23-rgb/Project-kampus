@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Masjid Al-Muttaqin | Login</title>
+<title>Masjid Al-Muttaqin | Daftar Akun</title>
 
-<link href="" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box}
@@ -15,7 +15,7 @@ body{
     min-height:100vh;
     background:
       linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-      url('{{ asset("assets/img/2.png") }}') center/cover no-repeat;
+      url('{{ asset("assets/img/bg-masjid.jpg") }}') center/cover no-repeat;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -40,7 +40,7 @@ body{
     background:#06653c;
 }
 
-/* === CARD LOGIN === */
+/* === CARD === */
 .card{
     width:420px;
     background:#fff;
@@ -116,22 +116,27 @@ button:hover{background:#06653c}
 
 <div class="card">
     <img src="{{ asset('assets/img/logo.png') }}" class="logo">
-    <h2>Masuk Akun</h2>
+    <h2>Daftar Akun</h2>
 
     @if(session('pesan'))
         <div class="alert">{{ session('pesan') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('auth.login.verify') }}">
+    @if($errors->any())
+        <div class="alert">{{ $errors->first() }}</div>
+    @endif
+
+    <form method="POST" action="{{ route('auth.register.post') }}">
         @csrf
+        <input type="text" name="nama" placeholder="Nama Lengkap" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
+        <input type="password" name="password_confirmation" placeholder="Ulangi Password" required>
+        <button type="submit">Daftar</button>
     </form>
 
     <div class="link">
-        <a href="{{ route('password.request') }}">Lupa Password?</a><br>
-        <a href="{{ route('auth.register') }}">Daftar Akun</a>
+        <a href="{{ route('auth.login') }}">Kembali ke Login</a>
     </div>
 </div>
 
