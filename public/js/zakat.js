@@ -58,7 +58,7 @@ const hasilTitle = document.getElementById("hasilTitle");
 const submitBtn = document.getElementById("submit-btn");
 
 // ======================================================
-// MODAL
+// MODAL KALKULATOR
 // ======================================================
 if (btnKalkulator) {
     btnKalkulator.addEventListener("click", () => {
@@ -159,121 +159,20 @@ if (resetBtn) {
 // ======================================================
 // GUNAKAN HASIL KALKULATOR
 // ======================================================
-if (submitBtn) {
-    submitBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        // ambil semua input wajib
-        const requiredFields = [
-            { el: document.getElementById("nama"), msg: "Silakan isi nama dulu!" },
-            { el: document.getElementById("email"), msg: "Silakan isi email dulu!" },
-            { el: document.getElementById("phone"), msg: "Silakan isi nomor telepon dulu!" },
-            { el: document.getElementById("jenis_zakat"), msg: "Silakan pilih jenis zakat dulu!" },
-            { el: nominal, msg: "Silakan isi nominal dulu!" }
-        ];
-
-        for (let field of requiredFields) {
-            if (!field.el) continue;
-
-            const value = field.el.tagName === "SELECT" ? field.el.value : field.el.value.trim();
-            if (!value || (field.el === nominal && getNumeric(field.el.value) <= 0)) {
-                alert(field.msg);
-                field.el.focus();
-                return;
-            }
+if (gunakanBtn) {
+    gunakanBtn.addEventListener("click", () => {
+        const nilai = parseInt(zakatNumeric.value);
+        if (nilai > 0) {
+            nominal.value = formatRupiah(nilai);
+            jumlahHarta.value = "";
         }
-
-        if (getNumeric(nominal.value) < 10000) {
-            alert("Minimal pembayaran Rp 10.000");
-            nominal.focus();
-            return;
-        }
-
-        // ============================
-        // TAMPILKAN MODAL KONFIRMASI
-        // ============================
-        let confirmModal = document.createElement("div");
-        confirmModal.style.position = "fixed";
-        confirmModal.style.top = "0";
-        confirmModal.style.left = "0";
-        confirmModal.style.width = "100%";
-        confirmModal.style.height = "100%";
-        confirmModal.style.background = "rgba(0,0,0,0.5)";
-        confirmModal.style.display = "flex";
-        confirmModal.style.alignItems = "center";
-        confirmModal.style.justifyContent = "center";
-        confirmModal.style.zIndex = "9999";
-
-        confirmModal.innerHTML = `
-            <div style="background:#fff; padding:20px; border-radius:8px; width:300px; text-align:center;">
-                <h3>Konfirmasi Pembayaran</h3>
-                <p><strong>Nama:</strong> ${document.getElementById("nama").value.trim()}</p>
-                <p><strong>Jenis Zakat:</strong> ${document.getElementById("jenis_zakat").value}</p>
-                <p><strong>Nominal:</strong> ${nominal.value}</p>
-                <div style="margin-top:20px;">
-                    <button id="confirmPay" style="margin-right:10px;">Bayar Sekarang</button>
-                    <button id="cancelPay">Batal</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(confirmModal);
-
-        document.getElementById("cancelPay").addEventListener("click", () => {
-            document.body.removeChild(confirmModal);
-        });
-
-        document.getElementById("confirmPay").addEventListener("click", () => {
-            document.body.removeChild(confirmModal);
-
-            // Lanjut ke Midtrans
-            submitBtn.disabled = true;
-            document.getElementById("btn-text").style.display = "none";
-            document.getElementById("btn-loading").style.display = "inline-flex";
-
-            fetch("/zakat/midtrans", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                },
-                body: JSON.stringify({
-                    nama: document.getElementById("nama").value.trim(),
-                    email: document.getElementById("email").value.trim(),
-                    phone: document.getElementById("phone").value.trim(),
-                    jenis_zakat: document.getElementById("jenis_zakat").value,
-                    nominal: getNumeric(nominal.value)
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                submitBtn.disabled = false;
-                document.getElementById("btn-text").style.display = "inline";
-                document.getElementById("btn-loading").style.display = "none";
-
-                if (!data.snap_token) {
-                    alert("Gagal mendapatkan token pembayaran");
-                    return;
-                }
-
-                snap.pay(data.snap_token, {
-                    onSuccess: () => window.location.href = `/zakat/success/${data.order_id}`,
-                    onPending: () => window.location.href = `/zakat/pending/${data.order_id}`,
-                    onError: () => alert("Pembayaran gagal")
-                });
-            })
-            .catch(err => {
-                submitBtn.disabled = false;
-                document.getElementById("btn-text").style.display = "inline";
-                document.getElementById("btn-loading").style.display = "none";
-                alert("Server error");
-                console.error(err);
-                
-            });
-        });
+        modal.style.display = "none";
     });
 }
-// Elements modal
+
+// ======================================================
+// MODAL KONFIRMASI PEMBAYARAN (BAZNAS STYLE)
+// ======================================================
 const confirmModal = document.getElementById("confirmation-modal");
 const modalNama = document.getElementById("modalNama");
 const modalJenis = document.getElementById("modalJenis");
@@ -281,27 +180,24 @@ const modalNominal = document.getElementById("modalNominal");
 const confirmBtn = document.getElementById("confirmPay");
 const cancelBtn = document.getElementById("cancelPay");
 
-// Fungsi show/hide modal
-function showModal() {
-    confirmModal.classList.add("show");
+function showModal() { confirmModal.classList.add("show"); }
+function hideModal() { confirmModal.classList.remove("show"); }
+
+if(cancelBtn){
+    cancelBtn.addEventListener("click", hideModal);
 }
 
-function hideModal() {
-    confirmModal.classList.remove("show");
-}
-
-// Event batal
-cancelBtn.addEventListener("click", hideModal);
 window.addEventListener("click", (e) => {
-    if (e.target === confirmModal) hideModal();
+    if(e.target === confirmModal) hideModal();
 });
 
-// Override submit button
-if (submitBtn) {
+// ======================================================
+// OVERRIDE TOMBOL SUBMIT
+// ======================================================
+if(submitBtn){
     submitBtn.addEventListener("click", function(e){
         e.preventDefault();
 
-        // validasi input (sama seperti sebelumnya)
         const requiredFields = [
             { el: document.getElementById("nama"), msg: "Silakan isi nama dulu!" },
             { el: document.getElementById("email"), msg: "Silakan isi email dulu!" },
@@ -310,17 +206,17 @@ if (submitBtn) {
             { el: nominal, msg: "Silakan isi nominal dulu!" }
         ];
 
-        for (let field of requiredFields) {
-            if (!field.el) continue;
+        for(let field of requiredFields){
+            if(!field.el) continue;
             const value = field.el.tagName === "SELECT" ? field.el.value : field.el.value.trim();
-            if (!value || (field.el === nominal && getNumeric(field.el.value) <= 0)) {
+            if(!value || (field.el === nominal && getNumeric(field.el.value)<=0)){
                 alert(field.msg);
                 field.el.focus();
                 return;
             }
         }
 
-        if (getNumeric(nominal.value) < 10000) {
+        if(getNumeric(nominal.value)<10000){
             alert("Minimal pembayaran Rp 10.000");
             nominal.focus();
             return;
@@ -331,23 +227,18 @@ if (submitBtn) {
         modalJenis.textContent = document.getElementById("jenis_zakat").value;
         modalNominal.textContent = nominal.value;
 
-        // Tampilkan modal
         showModal();
 
-        // Event bayar sekarang
-        confirmBtn.onclick = function() {
-            hideModal();
-
-            // Lanjut ke Midtrans
+        confirmBtn.onclick = function(){
             submitBtn.disabled = true;
             document.getElementById("btn-text").style.display = "none";
             document.getElementById("btn-loading").style.display = "inline-flex";
 
             fetch("/zakat/midtrans", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                    "X-CSRF-TOKEN":document.querySelector('meta[name="csrf-token"]').getAttribute("content")
                 },
                 body: JSON.stringify({
                     nama: document.getElementById("nama").value.trim(),
@@ -357,31 +248,34 @@ if (submitBtn) {
                     nominal: getNumeric(nominal.value)
                 })
             })
-            .then(res => res.json())
-            .then(data => {
-                submitBtn.disabled = false;
-                document.getElementById("btn-text").style.display = "inline";
-                document.getElementById("btn-loading").style.display = "none";
+            .then(res=>res.json())
+            .then(data=>{
+                submitBtn.disabled=false;
+                document.getElementById("btn-text").style.display="inline";
+                document.getElementById("btn-loading").style.display="none";
 
-                if (!data.snap_token) {
-                    alert("Gagal mendapatkan token pembayaran");
-                    return;
+                if(!data.snap_token){ 
+                    alert("Gagal mendapatkan token pembayaran"); 
+                    return; 
                 }
 
-                snap.pay(data.snap_token, {
-                    onSuccess: () => window.location.href = `/zakat/success/${data.order_id}`,
-                    onPending: () => window.location.href = `/zakat/pending/${data.order_id}`,
-                    onError: () => alert("Pembayaran gagal")
+                // Tutup modal setelah snap muncul
+                hideModal();
+
+                // Panggil snap.pay langsung, aman karena dipanggil di handler click
+                snap.pay(data.snap_token,{
+                    onSuccess:()=>window.location.href=`/zakat/success/${data.order_id}`,
+                    onPending:()=>window.location.href=`/zakat/pending/${data.order_id}`,
+                    onError:()=>alert("Pembayaran gagal")
                 });
             })
-            .catch(err => {
-                submitBtn.disabled = false;
-                document.getElementById("btn-text").style.display = "inline";
-                document.getElementById("btn-loading").style.display = "none";
+            .catch(err=>{
+                submitBtn.disabled=false;
+                document.getElementById("btn-text").style.display="inline";
+                document.getElementById("btn-loading").style.display="none";
                 alert("Server error");
                 console.error(err);
             });
         };
     });
 }
-
